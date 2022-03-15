@@ -98,15 +98,24 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
                 </div>
               </div>
               <br>
-              <select class="form-control" name="seccion">
-                <option disabled selected="selected" value="N">Seleccione una sección...</option>
-                <?php foreach($data as $value){ ?>
-                <option value="<?php echo $value['codarea']; ?>"><?php echo $value['descripcion']; ?></option> 
-                <?php } ?>
-              </select>
+              <button type="button" class="btn btn-primary" onClick="agregarCampos()">Agregar Tarea</button>
               <br>
-              <label for="meta" style="font-size: 20px">Meta: </label>
-              <input type="number" name="meta" id="meta" placeholder="meta">
+              <br>
+              <div class="row">
+                <div class="col-md-6" id="listaSecciones">
+                  <select class="form-control" name="seccion">
+                    <option disabled selected="selected" value="N">Seleccione una sección...</option>
+                    <?php foreach($data as $value){ ?>
+                    <option value="<?php echo $value['codarea']; ?>"><?php echo $value['descripcion']; ?></option> 
+                    <?php } ?>
+                  </select>
+                </div>
+                <div class="col-md-6" id="listaMetas">
+                  <label for="meta" style="font-size: 20px">Meta: </label>
+                  <input type="number" name="meta[]" id="meta" placeholder="meta">
+                </div>
+              </div>
+              
           </div>
           <br>
           <div class="box-footer text-right">
@@ -179,7 +188,14 @@ $(function () {
 		        }
 		    })
 		})
-	});
+	
+    
+  
+  });
+
+ 
+  
+ 
 
 </script>
 <!-- Fin Script y plugins para validacion -->
@@ -191,4 +207,13 @@ $('#cerrar').on('click',function(){
 </script>
 
 </body>
+<script>
+  function agregarCampos(){
+    $('#listaSecciones').append('<select class="form-control" name="seccion">\
+                    <option disabled selected="selected" value="N">Seleccione una sección...</option>\<?php foreach($data as $value){ ?>\<option value="\<?php echo $value['codarea']; ?>">\<\?php echo $value['descripcion']; ?></option>\<?php } ?></select>');
+    $('#listaMetas').append('<label for="meta" style="font-size: 20px">Meta: </label>\
+                            <input type="number" name="meta[]" id="meta" placeholder="meta">');
+                              
+    }
+</script>
 </html>

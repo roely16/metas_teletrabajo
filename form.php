@@ -218,7 +218,9 @@ $('#cerrar').on('click',function(){
     '<input type="number" name="meta[]" id="meta" placeholder="meta">'
 
     $('#listaSecciones').append(select);
-    $('#listaMetas').append(meta);        
+    $('#listaMetas').append(meta);      
+    
+    
   });
 </script>
 </html>

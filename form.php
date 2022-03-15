@@ -2,26 +2,17 @@
 
 include '../auth.php';
 
-if (isset($_REQUEST['id_meta'])){
-    
-    $query = "SELECT id_meta,
-                     nombre,
-                     tipo,
-                     cantidad,
-                     meta
-                FROM mte_metas
-               WHERE id_meta = ".$_REQUEST['id_meta'];
-        
-        $stid = oci_parse($conn, $query);
-        oci_execute($stid, OCI_DEFAULT);
-        
-        $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-        $id_meta = $row['ID_META'];
-        $nombre = $row['NOMBRE'];
-        $tipo = $row['TIPO'];
-        $cantidad = $row['CANTIDAD'];
-        $meta = $row['META'];
-	
+$query ="SELECT codarea,descripcion
+FROM RH_AREAS
+WHERE CODAREA IN(SELECT CODAREA FROM RH_EMPLEADOS WHERE DEPENDE='".$nit."')";
+$stid = oci_parse($conn, $query);
+oci_execute($stid, OCI_DEFAULT);
+$data=[];
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+  $arreglo=[];
+  $arreglo['codarea'] = $row['CODAREA'];
+  $arreglo['descripcion'] = $row['DESCRIPCION'];
+  $data[]=$arreglo;
 }
 
 ?>
@@ -59,80 +50,77 @@ if (isset($_REQUEST['id_meta'])){
   </style>
 
 </head>
-<body style="width: 750px">
-<div class="wrapper">
-
-
-      <div class="row">
-        <div class="col-md-12">
-        
-          <div class="box" style="margin: 0; top-border: 0px">
-          <form role="form" method="post" action="accion_grabar.php" enctype="multipart/form-data" id="form" autocomplete="off">
-           <div class="box-header with-border">
-           	<h3>Nueva Meta</h3>
-           </div>
-
-            <div class="box-body">
-                <label style="font-size: 20px">Nombre</label>
-                <input type="text" class="form-control" placeholder="Nombre de la meta..." name="nombre" value="<?php if (isset($id_meta)){echo $nombre;}?>" required>
-                <br>
-                <label style="font-size: 20px">Modalidad</label>
-                <select class="form-control" name="tipo" required>
-                  <option disabled selected="selected" value="N">Seleccione uno...</option>
-                  <option value="P" <?php if(isset($id_meta)){if($tipo == 'P'){echo 'selected="selected"';}}?>>Presencial</option>
-                  <option value="T" <?php if(isset($id_meta)){if($tipo == 'T'){echo 'selected="selected"';}}?>>Teletrabajo</option>
-                  <option value="M" <?php if(isset($id_meta)){if($tipo == 'M'){echo 'selected="selected"';}}?>>Mixto</option>
-                </select>
-                <br>
-                <label style="font-size: 20px">Tipo</label>
-                <select class="form-control" name="modalidad" required>
-                  <option disabled selected="selected" value="N">Seleccione uno...</option>
-                  <option value="R" <?php if(isset($id_meta)){if($tipo == 'R'){echo 'selected="selected"';}}?>>Regular</option>
-                  <option value="T" <?php if(isset($id_meta)){if($tipo == 'T'){echo 'selected="selected"';}}?>>Temporal</option>
-                  <option value="A" <?php if(isset($id_meta)){if($tipo == 'A'){echo 'selected="selected"';}}?>>Adicional</option>
-                </select>
-                <br>
-                <label style="font-size: 20px">Meta</label>
-                <input type="number" class="form-control" name="meta" required>
-                <br>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">
-                      <label for="poa" style="font-size: 20px">POA</label>
-                      <input type="checkbox" value="1" name="poa" id="poa" aria-label="poa" >
-                    </div>
-                  </div>
-                </div>
-                <br>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">
-                      <label for="activa" style="font-size: 20px">Activa</label>
-                      <input type="checkbox" value="1" name="activa" id="activa" aria-label="activa" >
-                    </div>
-                  </div>
-                </div>
-                <br>
-              </div>
-              
-            </div>
-            <br>
-           
-            
-            <div class="box-footer text-right">
-				      <div class="btn btn-default" id="cerrar">Cancelar</div>
-                <button type="submit" class="btn btn-primary" id="prueba" name="prueba">Grabar</button>
-                <input type="hidden" name="cantidad" value="0">
-              </div>
-			</form>
+<body style="width: 850px">
+  <div class="wrapper">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box" style="margin: 0; top-border: 0px">
+        <form role="form" method="post" action="accion_grabar.php" enctype="multipart/form-data" id="form" autocomplete="off">
+          <div class="box-header with-border">
+          <h3>Nueva Meta</h3>
           </div>
-        </div>
 
+          <div class="box-body">
+              <label style="font-size: 20px">Nombre</label>
+              <input type="text" class="form-control" placeholder="Nombre de la meta..." name="nombre" value="<?php if (isset($id_meta)){echo $nombre;}?>" required>
+              <br>
+              <label style="font-size: 20px">Modalidad</label>
+              <select class="form-control" name="tipo" required>
+                <option disabled selected="selected" value="N">Seleccione uno...</option>
+                <option value="P" <?php if(isset($id_meta)){if($tipo == 'P'){echo 'selected="selected"';}}?>>Presencial</option>
+                <option value="T" <?php if(isset($id_meta)){if($tipo == 'T'){echo 'selected="selected"';}}?>>Teletrabajo</option>
+                <option value="M" <?php if(isset($id_meta)){if($tipo == 'M'){echo 'selected="selected"';}}?>>Mixto</option>
+              </select>
+              <br>
+              <label style="font-size: 20px">Tipo</label>
+              <select class="form-control" name="modalidad" required>
+                <option disabled selected="selected" value="N">Seleccione uno...</option>
+                <option value="R" <?php if(isset($id_meta)){if($tipo == 'R'){echo 'selected="selected"';}}?>>Regular</option>
+                <option value="T" <?php if(isset($id_meta)){if($tipo == 'T'){echo 'selected="selected"';}}?>>Temporal</option>
+                <option value="A" <?php if(isset($id_meta)){if($tipo == 'A'){echo 'selected="selected"';}}?>>Adicional</option>
+              </select>
+              <br>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <label for="poa" style="font-size: 20px">POA</label>
+                    <input type="checkbox" value="1" name="poa" id="poa" aria-label="poa" >
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <label for="activa" style="font-size: 20px">Activa</label>
+                    <input type="checkbox" value="1" name="activa" id="activa" aria-label="activa" >
+                  </div>
+                </div>
+              </div>
+              <br>
+              <select class="form-control" name="seccion">
+                <option disabled selected="selected" value="N">Seleccione una sección...</option>
+                <?php foreach($data as $value){ ?>
+                <option value="<?php echo $value['codarea']; ?>"><?php echo $value['descripcion']; ?></option> 
+                <?php } ?>
+              </select>
+              <br>
+              <label for="meta" style="font-size: 20px">Meta: </label>
+              <input type="number" name="meta" id="meta" placeholder="meta">
+          </div>
+          <br>
+          <div class="box-footer text-right">
+            <div class="btn btn-default" id="cerrar">Cancelar</div>
+              <button type="submit" class="btn btn-primary" id="prueba" name="prueba">Grabar</button>
+              <input type="hidden" name="cantidad" value="0">
+            </div>
+          </div>
+        </form>
       </div>
+    </div>
+  </div>
+</body>
 
-
-
-</div>
 <!-- ./wrapper -->
 
 <!-- jQuery 2.2.3 -->

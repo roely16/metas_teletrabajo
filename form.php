@@ -98,12 +98,12 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
                 </div>
               </div>
               <br>
-              <button type="button" class="btn btn-primary" onClick="agregarCampos()">Agregar Tarea</button>
+              <button type="button" class="btn btn-primary" id="agregar">Agregar Tarea</button>
               <br>
               <br>
               <div class="row">
                 <div class="col-md-6" id="listaSecciones">
-                  <select class="form-control" name="seccion">
+                  <select class="form-control" name="seccion[]">
                     <option disabled selected="selected" value="N">Seleccione una sección...</option>
                     <?php foreach($data as $value){ ?>
                     <option value="<?php echo $value['codarea']; ?>"><?php echo $value['descripcion']; ?></option> 
@@ -192,11 +192,6 @@ $(function () {
     
   
   });
-
- 
-  
- 
-
 </script>
 <!-- Fin Script y plugins para validacion -->
 
@@ -208,12 +203,11 @@ $('#cerrar').on('click',function(){
 
 </body>
 <script>
-  function agregarCampos(){
-    $('#listaSecciones').append('<select class="form-control" name="seccion">\
+  $('#agregar').on('click',function(){
+    $('#listaSecciones').append('<select class="form-control" name="seccion[]">\
                     <option disabled selected="selected" value="N">Seleccione una sección...</option>\<?php foreach($data as $value){ ?>\<option value="\<?php echo $value['codarea']; ?>">\<\?php echo $value['descripcion']; ?></option>\<?php } ?></select>');
     $('#listaMetas').append('<label for="meta" style="font-size: 20px">Meta: </label>\
-                            <input type="number" name="meta[]" id="meta" placeholder="meta">');
-                              
-    }
+                            <input type="number" name="meta[]" id="meta" placeholder="meta">');        
+  });
 </script>
 </html>
